@@ -1,0 +1,153 @@
+{
+  "inputs": [
+    {
+      "name": "Height",
+      "min": 0.0,
+      "max": 700.0,
+      "terms": [
+        { "name": "Ground", "type": "triangle", "points": [0.0, 0.0, 30.0] },
+        { "name": "Close", "type": "triangle", "points": [25.0, 100.0, 150.0] },
+        {
+          "name": "Medium",
+          "type": "trapezoid",
+          "points": [100.0, 300.0, 400.0, 500.0]
+        },
+        {
+          "name": "High",
+          "type": "trapezoid",
+          "points": [400.0, 550.0, 700.0, 700.0]
+        }
+      ]
+    },
+    {
+      "name": "Velocity",
+      "min": -2.0,
+      "max": 15.0,
+      "terms": [
+        {
+          "name": "Climb",
+          "type": "trapezoid",
+          "points": [-2.0, -2.0, -0.2, 0.0]
+        },
+        { "name": "Land", "type": "triangle", "points": [0.0, 0.8, 1.25] },
+        { "name": "Slow", "type": "triangle", "points": [1.0, 1.5, 3.0] },
+        {
+          "name": "Fast",
+          "type": "trapezoid",
+          "points": [2.0, 3.5, 15.0, 15.0]
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "name": "Thrust",
+      "min": 0.0,
+      "max": 1.0,
+      "terms": [
+        { "name": "Off", "type": "triangle", "points": [0.0, 0.0, 0.2] },
+        { "name": "Idle", "type": "triangle", "points": [0.2, 0.35, 0.45] },
+        { "name": "Soft", "type": "triangle", "points": [0.4, 0.45, 0.5] },
+        { "name": "Mid", "type": "triangle", "points": [0.45, 0.6, 0.7] },
+        { "name": "Max", "type": "triangle", "points": [0.6, 1.0, 1.0] }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "desc": "IF Velocity IS Climb THEN Thrust IS Off",
+      "if": { "var": "Velocity", "is": "Climb" },
+      "then": { "var": "Thrust", "is": "Off" }
+    },
+    {
+      "desc": "IF Height IS High AND Velocity IS Slow THEN Thrust IS Off",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "High" },
+          { "var": "Velocity", "is": "Slow" }
+        ]
+      },
+      "then": { "var": "Thrust", "is": "Off" }
+    },
+    {
+      "desc": "IF Height IS High AND Velocity IS Fast THEN Thrust IS Idle",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "High" },
+          { "var": "Velocity", "is": "Fast" }
+        ]
+      },
+      "then": { "var": "Thrust", "is": "Soft" }
+    },
+    {
+      "desc": "IF Height IS Medium AND Velocity IS Fast THEN Thrust IS Mid",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "Medium" },
+          { "var": "Velocity", "is": "Fast" }
+        ]
+      },
+      "then": { "var": "Thrust", "is": "Mid" }
+    },
+    {
+      "desc": "IF Height IS Medium AND Velocity IS Slow THEN Thrust IS Idle",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "Medium" },
+          { "var": "Velocity", "is": "Slow" }
+        ]
+      },
+      "then": { "var": "Thrust", "is": "Idle" }
+    },
+    {
+      "desc": "IF Height IS Close AND Velocity IS Fast THEN Thrust IS Max",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "Close" },
+          { "var": "Velocity", "is": "Fast" }
+        ]
+      },
+      "then": { "var": "Thrust", "is": "Max" }
+    },
+    {
+      "desc": "IF Height IS Close AND Velocity IS Slow THEN Thrust IS Soft",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "Close" },
+          { "var": "Velocity", "is": "Slow" }
+        ]
+      },
+      "then": { "var": "Thrust", "is": "Soft" }
+    },
+    {
+      "desc": "IF Height IS Ground AND Velocity IS Fast THEN Thrust IS Max",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "Ground" },
+          { "var": "Velocity", "is": "Fast" }
+        ]
+      },
+      "then": { "var": "Thrust", "is": "Max" }
+    },
+    {
+      "desc": "IF Height IS Ground AND Velocity IS Slow THEN Thrust IS Soft",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "Ground" },
+          { "var": "Velocity", "is": "Slow" }
+        ]
+      },
+      "then": { "var": "Thrust", "is": "Max" }
+    },
+    {
+      "desc": "IF Height IS Ground AND Velocity IS Land THEN Thrust IS Idle",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "Ground" },
+          { "var": "Velocity", "is": "Land" }
+        ]
+      },
+      "then": { "var": "Thrust", "is": "Idle" }
+    }
+  ]
+}
