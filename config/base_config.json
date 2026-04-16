@@ -20,7 +20,7 @@
       ]
     },
     {
-      "name": "Velocity",
+      "name": "VSpeed",
       "min": -2.0,
       "max": 15.0,
       "terms": [
@@ -37,11 +37,67 @@
           "points": [2.0, 3.5, 15.0, 15.0]
         }
       ]
+    },
+    {
+      "name": "ErrorX",
+      "min": -350.0,
+      "max": 350.0,
+      "terms": [
+        {
+          "name": "FarLeft",
+          "type": "trapezoid",
+          "points": [-350.0, -350.0, -200.0, -150.0]
+        },
+        {
+          "name": "Left",
+          "type": "triangle",
+          "points": [-250.0, -200.0, -30.0]
+        },
+        { "name": "Center", "type": "triangle", "points": [-35.0, 0.0, 35.0] },
+        {
+          "name": "Right",
+          "type": "triangle",
+          "points": [30.0, 200.0, 250.0]
+        },
+        {
+          "name": "FarRight",
+          "type": "trapezoid",
+          "points": [150.0, 200.0, 350.0, 350.0]
+        }
+      ]
+    },
+    {
+      "name": "HSpeed",
+      "min": -15.0,
+      "max": 15.0,
+      "terms": [
+        {
+          "name": "FastLeft",
+          "type": "trapezoid",
+          "points": [-15.0, -15.0, -10.0, -7.5]
+        },
+        {
+          "name": "SlowLeft",
+          "type": "triangle",
+          "points": [-10.0, -5.0, 0.0]
+        },
+        { "name": "Zero", "type": "triangle", "points": [-1.0, 0.0, 1.0] },
+        {
+          "name": "SlowRight",
+          "type": "triangle",
+          "points": [0.0, 5.0, 10.0]
+        },
+        {
+          "name": "FastRight",
+          "type": "trapezoid",
+          "points": [7.5, 10.0, 15.0, 15.0]
+        }
+      ]
     }
   ],
   "outputs": [
     {
-      "name": "Thrust",
+      "name": "VThrust",
       "min": 0.0,
       "max": 1.0,
       "terms": [
@@ -51,103 +107,261 @@
         { "name": "Mid", "type": "triangle", "points": [0.45, 0.6, 0.7] },
         { "name": "Max", "type": "triangle", "points": [0.6, 1.0, 1.0] }
       ]
+    },
+    {
+      "name": "HThrust",
+      "min": -1.0,
+      "max": 1.0,
+      "terms": [
+        { "name": "FullLeft", "type": "triangle", "points": [-1.0, -1.0, -0.6] },
+        { "name": "SoftLeft", "type": "triangle", "points": [-0.75, -0.45, -0.2] },
+        { "name": "Zero", "type": "triangle", "points": [-0.25, 0.0, 0.25] },
+        { "name": "SoftRight", "type": "triangle", "points": [0.2, 0.45, 0.75] },
+        { "name": "FullRight", "type": "triangle", "points": [0.6, 1.0, 1.0] }
+      ]
     }
   ],
   "rules": [
     {
-      "desc": "IF Velocity IS Climb THEN Thrust IS Off",
-      "if": { "var": "Velocity", "is": "Climb" },
-      "then": { "var": "Thrust", "is": "Off" }
+      "desc": "IF VSpeed IS Climb THEN VThrust IS Off",
+      "if": { "var": "VSpeed", "is": "Climb" },
+      "then": { "var": "VThrust", "is": "Off" }
     },
     {
-      "desc": "IF Height IS High AND Velocity IS Slow THEN Thrust IS Off",
+      "desc": "IF Height IS High AND VSpeed IS Slow THEN VThrust IS Off",
       "if": {
         "and": [
           { "var": "Height", "is": "High" },
-          { "var": "Velocity", "is": "Slow" }
+          { "var": "VSpeed", "is": "Slow" }
         ]
       },
-      "then": { "var": "Thrust", "is": "Off" }
+      "then": { "var": "VThrust", "is": "Off" }
     },
     {
-      "desc": "IF Height IS High AND Velocity IS Fast THEN Thrust IS Idle",
+      "desc": "IF Height IS High AND VSpeed IS Fast THEN VThrust IS Idle",
       "if": {
         "and": [
           { "var": "Height", "is": "High" },
-          { "var": "Velocity", "is": "Fast" }
+          { "var": "VSpeed", "is": "Fast" }
         ]
       },
-      "then": { "var": "Thrust", "is": "Soft" }
+      "then": { "var": "VThrust", "is": "Soft" }
     },
     {
-      "desc": "IF Height IS Medium AND Velocity IS Fast THEN Thrust IS Mid",
+      "desc": "IF Height IS Medium AND VSpeed IS Fast THEN VThrust IS Mid",
       "if": {
         "and": [
           { "var": "Height", "is": "Medium" },
-          { "var": "Velocity", "is": "Fast" }
+          { "var": "VSpeed", "is": "Fast" }
         ]
       },
-      "then": { "var": "Thrust", "is": "Mid" }
+      "then": { "var": "VThrust", "is": "Mid" }
     },
     {
-      "desc": "IF Height IS Medium AND Velocity IS Slow THEN Thrust IS Idle",
+      "desc": "IF Height IS Medium AND VSpeed IS Slow THEN VThrust IS Idle",
       "if": {
         "and": [
           { "var": "Height", "is": "Medium" },
-          { "var": "Velocity", "is": "Slow" }
+          { "var": "VSpeed", "is": "Slow" }
         ]
       },
-      "then": { "var": "Thrust", "is": "Idle" }
+      "then": { "var": "VThrust", "is": "Idle" }
     },
     {
-      "desc": "IF Height IS Close AND Velocity IS Fast THEN Thrust IS Max",
+      "desc": "IF Height IS Close AND VSpeed IS Fast THEN VThrust IS Max",
       "if": {
         "and": [
           { "var": "Height", "is": "Close" },
-          { "var": "Velocity", "is": "Fast" }
+          { "var": "VSpeed", "is": "Fast" }
         ]
       },
-      "then": { "var": "Thrust", "is": "Max" }
+      "then": { "var": "VThrust", "is": "Max" }
     },
     {
-      "desc": "IF Height IS Close AND Velocity IS Slow THEN Thrust IS Soft",
+      "desc": "IF Height IS Close AND VSpeed IS Slow THEN VThrust IS Soft",
       "if": {
         "and": [
           { "var": "Height", "is": "Close" },
-          { "var": "Velocity", "is": "Slow" }
+          { "var": "VSpeed", "is": "Slow" }
         ]
       },
-      "then": { "var": "Thrust", "is": "Soft" }
+      "then": { "var": "VThrust", "is": "Soft" }
     },
     {
-      "desc": "IF Height IS Ground AND Velocity IS Fast THEN Thrust IS Max",
+      "desc": "IF Height IS Ground AND VSpeed IS Fast THEN VThrust IS Max",
       "if": {
         "and": [
           { "var": "Height", "is": "Ground" },
-          { "var": "Velocity", "is": "Fast" }
+          { "var": "VSpeed", "is": "Fast" }
         ]
       },
-      "then": { "var": "Thrust", "is": "Max" }
+      "then": { "var": "VThrust", "is": "Max" }
     },
     {
-      "desc": "IF Height IS Ground AND Velocity IS Slow THEN Thrust IS Soft",
+      "desc": "IF Height IS Ground AND VSpeed IS Slow THEN VThrust IS Soft",
       "if": {
         "and": [
           { "var": "Height", "is": "Ground" },
-          { "var": "Velocity", "is": "Slow" }
+          { "var": "VSpeed", "is": "Slow" }
         ]
       },
-      "then": { "var": "Thrust", "is": "Max" }
+      "then": { "var": "VThrust", "is": "Max" }
     },
     {
-      "desc": "IF Height IS Ground AND Velocity IS Land THEN Thrust IS Idle",
+      "desc": "IF Height IS Ground AND VSpeed IS Land THEN VThrust IS Idle",
       "if": {
         "and": [
           { "var": "Height", "is": "Ground" },
-          { "var": "Velocity", "is": "Land" }
+          { "var": "VSpeed", "is": "Land" }
         ]
       },
-      "then": { "var": "Thrust", "is": "Idle" }
+      "then": { "var": "VThrust", "is": "Idle" }
+    },
+    {
+      "desc": "IF ErrorX IS FarLeft THEN HThrust IS FullRight",
+      "if": {
+        "var": "ErrorX",
+        "is": "FarLeft"
+      },
+      "then": { "var": "HThrust", "is": "FullRight" }
+    },
+    {
+      "desc": "IF ErrorX IS Left AND HSpeed IS FastLeft THEN HThrust IS FullRight",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Left" },
+          { "var": "HSpeed", "is": "FastLeft" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "FullRight" }
+    },
+    {
+      "desc": "IF ErrorX IS Left AND HSpeed IS SlowLeft THEN HThrust IS SoftRight",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Left" },
+          { "var": "HSpeed", "is": "SlowLeft" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "SoftRight" }
+    },
+    {
+      "desc": "IF ErrorX IS Left AND HSpeed IS Zero THEN HThrust IS SoftRight",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Left" },
+          { "var": "HSpeed", "is": "Zero" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "SoftRight" }
+    },
+    {
+      "desc": "IF ErrorX IS Left AND HSpeed IS FastRight THEN HThrust IS SoftLeft",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Left" },
+          { "var": "HSpeed", "is": "FastRight" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "SoftLeft" }
+    },
+    {
+      "desc": "IF ErrorX IS Center AND HSpeed IS FastLeft THEN HThrust IS SoftRight",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Center" },
+          { "var": "HSpeed", "is": "FastLeft" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "SoftRight" }
+    },
+    {
+      "desc": "IF ErrorX IS Center AND HSpeed IS SlowLeft THEN HThrust IS Zero",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Center" },
+          { "var": "HSpeed", "is": "SlowLeft" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "Zero" }
+    },
+    {
+      "desc": "IF ErrorX IS Center AND HSpeed IS Zero THEN HThrust IS Zero",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Center" },
+          { "var": "HSpeed", "is": "Zero" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "Zero" }
+    },
+    {
+      "desc": "IF ErrorX IS Center AND HSpeed IS SlowRight THEN HThrust IS Zero",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Center" },
+          { "var": "HSpeed", "is": "SlowRight" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "Zero" }
+    },
+    {
+      "desc": "IF ErrorX IS Center AND HSpeed IS FastRight THEN HThrust IS SoftLeft",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Center" },
+          { "var": "HSpeed", "is": "FastRight" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "SoftLeft" }
+    },
+    {
+      "desc": "IF ErrorX IS Right AND HSpeed IS FastLeft THEN HThrust IS SoftRight",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Right" },
+          { "var": "HSpeed", "is": "FastLeft" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "SoftRight" }
+    },
+    {
+      "desc": "IF ErrorX IS Right AND HSpeed IS SlowRight THEN HThrust IS SoftLeft",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Right" },
+          { "var": "HSpeed", "is": "SlowRight" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "SoftLeft" }
+    },
+    {
+      "desc": "IF ErrorX IS Right AND HSpeed IS Zero THEN HThrust IS SoftLeft",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Right" },
+          { "var": "HSpeed", "is": "Zero" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "SoftLeft" }
+    },
+    {
+      "desc": "IF ErrorX IS Right AND HSpeed IS FastRight THEN HThrust IS FullLeft",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Right" },
+          { "var": "HSpeed", "is": "FastRight" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "FullLeft" }
+    },
+    {
+      "desc": "IF ErrorX IS FarRight THEN HThrust IS FullLeft",
+      "if": {
+        "var": "ErrorX",
+        "is": "FarRight"
+      },
+      "then": { "var": "HThrust", "is": "FullLeft" }
     }
   ]
 }

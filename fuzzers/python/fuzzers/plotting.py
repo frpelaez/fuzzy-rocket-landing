@@ -43,8 +43,11 @@ def _plot_surface(
         )
         return
 
-    x_range = np.linspace(var1.min, var1.max, resolution)
-    y_range = np.linspace(var2.min, var2.max, resolution)
+    eps1 = (var1.max - var1.min) * 0.0001
+    eps2 = (var2.max - var2.min) * 0.0001
+
+    x_range = np.linspace(var1.min + eps1, var1.max - eps1, resolution)
+    y_range = np.linspace(var2.min + eps2, var2.max - eps2, resolution)
 
     X, Y = np.meshgrid(x_range, y_range)
     Z = np.zeros(X.shape)
@@ -53,12 +56,12 @@ def _plot_surface(
         for j in range(resolution):
             inputs = {input1_name: X[i, j], input2_name: Y[i, j]}
             res = self.compute(inputs)
-            Z[i, j] = res.get(output_name, 0.0)
+            Z[i, j] = res.get(output_name, np.nan)
 
     fig = plt.figure(figsize=(10, 6))
     ax = fig.add_subplot(111, projection="3d")
 
-    surf = ax.plot_surface(X, Y, Z, cmap="viridis", linewidth=0, antialiased=True)
+    surf = ax.plot_surface(X, Y, Z, cmap="plasma", linewidth=0, antialiased=True)
 
     ax.set_xlabel(f"{input1_name}")
     ax.set_ylabel(f"{input2_name}")

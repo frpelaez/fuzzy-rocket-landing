@@ -25,11 +25,15 @@ def draw_editor_panel(
     y_gutter = 10
     rules = config.get("rules", [])
     for i, rule in enumerate(rules):
+        cursor_y = int(y + y_offset) + i * y_gutter
+        if cursor_y > height - 50:
+            break
+
         cursor_x = x + 30
         pr.draw_text(
             f"R{i + 1}:",
             int(cursor_x),
-            int(y + y_offset) + i * y_gutter,
+            cursor_y,
             15,
             pr.DARKGRAY,
         )
@@ -155,17 +159,20 @@ def draw_info_panel(
         pr.Rectangle(x, y, width, height), 0.1, 10, (r, g, b, 100)
     )
 
-    pr.draw_text(f"Height:   {info['height']:.1f}", x + 10, y + 10, 20, pr.DARKGRAY)
-    pr.draw_text(f"Speed:   {info['velocity']:.2f}", x + 10, y + 30, 20, pr.DARKGRAY)
-    pr.draw_text(f"Thrust:  {info['thrust']:.2f}", x + 10, y + 50, 20, pr.DARKGRAY)
+    pr.draw_text(f"Height:    {info['height']:.1f}", x + 10, y + 10, 20, pr.DARKGRAY)
+    pr.draw_text(f"ErrorX:   {info['error_x']:.1f}", x + 10, y + 30, 20, pr.DARKGRAY)
+    pr.draw_text(f"VSpeed:  {info['v_speed']:.2f}", x + 10, y + 50, 20, pr.DARKGRAY)
+    pr.draw_text(f"HSpeed:   {info['h_speed']:.2f}", x + 10, y + 70, 20, pr.DARKGRAY)
+    pr.draw_text(f"VThrust: {info['v_thrust']:.2f}", x + 10, y + 90, 20, pr.DARKGRAY)
+    pr.draw_text(f"HThrust: {info['h_thrust']:.2f}", x + 10, y + 110, 20, pr.DARKGRAY)
     state = info["state"]
     pr.draw_text(
-        f"State:    {state}",
+        f"State:     {state}",
         x + 10,
-        y + 70,
+        y + 130,
         20,
         pr.DARKGREEN
         if state == "land"
         else (pr.RED if state == "crash" else pr.DARKGRAY),
     )
-    pr.draw_text(f"FPS:      {pr.get_fps()}", x + 10, y + 90, 20, pr.DARKGRAY)
+    pr.draw_text(f"FPS:       {pr.get_fps()}", x + 10, y + 150, 20, pr.DARKGRAY)

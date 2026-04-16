@@ -20,32 +20,35 @@ class Rocket:
 
         self.thrusters = {
             "main": Thruster(0, self.height / 2, 0, 1, self.MAX_THRUST, 1.0),
-            "left": Thruster(-self.width / 2, 0, -1, 0, self.MAX_THRUST / 2, 0.6),
-            "right": Thruster(self.width / 2, 0, 1, 0, self.MAX_THRUST / 2, 0.6),
+            "left": Thruster(-self.width / 2, 0, -1, 0, self.MAX_THRUST / 2, 0.75),
+            "right": Thruster(self.width / 2, 0, 1, 0, self.MAX_THRUST / 2, 0.75),
         }
 
     def get_thruster(self, name: str) -> Thruster:
         return self.thrusters[name]
 
-    def reset(self, y: int) -> None:
+    def reset(self, x: int, y: int) -> None:
+        self.x = x
         self.y = y
         self.vy = 9.0
         self.state = "airborne"
 
-    def update(self, dt: float, ground_y: float) -> None:
+    def update(
+        self, dt: float, ground_y: float, platfrom_x: float, platform_width: float
+    ) -> None:
         if self.state != "airborne":
             return
 
         force_x = 0.0
-        force_y = GRAVITY * dt
+        force_y = GRAVITY
 
         for thruster in self.thrusters.values():
             force = thruster.get_force()
-            force_x += force.x * dt
-            force_y += force.y * dt
+            force_x += force.x
+            force_y += force.y
 
-        self.vx += force_x
-        self.vy += force_y
+        self.vx += force_x * dt
+        self.vy += force_y * dt
 
         self.x += self.vx * dt
         self.y += self.vy * dt
@@ -53,20 +56,22 @@ class Rocket:
         if self.y + self.height / 2 >= ground_y:
             self.y = ground_y - self.height / 2
 
-            if self.vy <= self.VEL_THRESHOLD:
+            if (
+                self.vy <= self.VEL_THRESHOLD
+                and abs(self.x - platfrom_x) <= platform_width / 2
+            ):
                 self.state = "land"
             else:
                 self.state = "crash"
 
             print(f"[INFO] Land/Crash speed: {self.vy:.1f}")
 
+            self.vx = 0.0
             self.vy = 0.0
 
     def draw(self) -> None:
         color_body = pr.RAYWHITE
-        if self.state == "land":
-            color_body = pr.DARKGREEN
-        elif self.state == "crash":
+        if self.state == "crash":
             color_body = pr.RED
 
         pr.draw_rectangle_pro(
@@ -84,7 +89,7 @@ class Rocket:
         u1 = pr.Vector2(self.x - self.width / 2, self.y - self.height / 2)
         u2 = pr.Vector2(self.x + self.width / 2, self.y - self.height / 2)
         u3 = pr.Vector2(self.x, self.y - self.height / 2 - 30)
-        pr.draw_triangle(u1, u2, u3, pr.RED if self.state != "land" else pr.DARKGREEN)
+        pr.draw_triangle(u1, u2, u3, pr.RED)
 
         pr.draw_circle_sector(
             (int(self.x + self.width / 2), int(self.y)), 6.0, 90, 270, 10, pr.DARKGRAY
