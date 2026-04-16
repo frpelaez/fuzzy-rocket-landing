@@ -4,11 +4,11 @@ import random
 
 import pyray as pr
 
-from fuzzy_rs.config import load_engine_json
-from fuzzy_rs.editor import draw_editor_panel, draw_info_panel
-from fuzzy_rs.rocket import Rocket
-from fuzzy_rs.wind import Wind, WindSystem
-from fuzzy_rs.draw_utils import draw_tree
+from fuzzy_rocket_landing.config import load_engine_json
+from fuzzy_rocket_landing.editor import draw_editor_panel, draw_info_panel
+from fuzzy_rocket_landing.rocket import Rocket
+from fuzzy_rocket_landing.wind import Wind, WindSystem
+from fuzzy_rocket_landing.draw_utils import draw_tree
 
 BASE_CONFIG_PATH = Path("./config/base_config.json")
 CONFIG_PATH = Path("./config/config.json")

@@ -5,7 +5,7 @@ requires-python = ">=3.14"
 [manifest]
 members = [
     "fuzzers",
-    "fuzzy-rs",
+    "fuzzy-rocket-landing",
 ]
 
 [[package]]
@@ -113,7 +113,7 @@ name = "fuzzers"
 source = { editable = "fuzzers" }
 
 [[package]]
-name = "fuzzy-rs"
+name = "fuzzy-rocket-landing"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

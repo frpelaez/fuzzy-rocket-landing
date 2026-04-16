@@ -1,5 +1,5 @@
 [project]
-name = "fuzzy-rs"
+name = "fuzzy-rocket-landing"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -23,4 +23,4 @@ members = [
 fuzzers = { workspace = true, editable = true }
 
 [project.scripts]
-sim = "fuzzy_rs.main:main"
+sim = "fuzzy_rocket_landing.main:main"
