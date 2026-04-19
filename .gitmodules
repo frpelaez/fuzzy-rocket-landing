@@ -1,0 +1,3 @@
+[submodule "fuzzers"]
+	path = fuzzers
+	url = https://github.com/frpelaez/fuzzers
