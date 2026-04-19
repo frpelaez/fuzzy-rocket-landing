@@ -13,6 +13,8 @@ from fuzzy_rocket_landing.draw_utils import draw_tree
 BASE_CONFIG_PATH = Path("./config/base_config.json")
 CONFIG_PATH = Path("./config/config.json")
 
+random.seed(67)
+
 
 def main():
     sim_width = 600
@@ -34,10 +36,10 @@ def main():
 
     dt = 0.15
 
-    rocket = Rocket(pr.get_random_value(30, sim_width - 30), 40)
+    initial_x = random.randint(30, sim_width - 30)
+    rocket = Rocket(initial_x, 40)
 
     wind = Wind(0.3)
-
     wind_effects = WindSystem(60, sim_width, screen_height - 100)
 
     ground_y = screen_height - 100
@@ -57,6 +59,11 @@ def main():
         if pr.is_key_pressed(pr.KeyboardKey.KEY_SPACE):
             paused = not paused
 
+        if paused:
+            if pr.is_key_pressed(pr.KeyboardKey.KEY_P):
+                for var in engine.variables():
+                    var.plot()
+
         if pr.is_key_pressed(pr.KeyboardKey.KEY_R):
             print("[INFO] Reseting config back to base...")
             try:
@@ -65,7 +72,9 @@ def main():
                     config = json.load(f)
                 print("[INFO] Engine reloaded successfully")
 
-                rocket.reset(pr.get_random_value(30, sim_width - 30), 40)
+                rocket = Rocket(random.randint(30, sim_width - 30), 40)
+                # wind = Wind(0.3)
+                # wind_effects = WindSystem(60, sim_width, screen_height - 100)
 
             except Exception as e:
                 print(f"[ERROR] Error reloading config.json: {e}")
@@ -96,16 +105,18 @@ def main():
 
             v_thrust = outputs.get("VThrust", 0.0)
             h_thrust = outputs.get("HThrust", 0.0)
+            # v_thrust = 0.0
+            # h_thrust = 0.0
 
             if pr.is_key_down(pr.KeyboardKey.KEY_LEFT_CONTROL):
                 if pr.is_key_down(pr.KeyboardKey.KEY_UP):
                     v_thrust = 1.0
                 if pr.is_key_down(pr.KeyboardKey.KEY_LEFT):
-                    rocket.get_thruster("right").set_thrust(1.0)
+                    h_thrust = -1.0
                 else:
                     rocket.get_thruster("right").set_thrust(0.0)
                 if pr.is_key_down(pr.KeyboardKey.KEY_RIGHT):
-                    rocket.get_thruster("left").set_thrust(1.0)
+                    h_thrust = 1.0
                 else:
                     rocket.get_thruster("left").set_thrust(0.0)
 
@@ -141,7 +152,7 @@ def main():
         )
 
         for tree in forest:
-            draw_tree(tree[0], tree[1], tree[2])
+            draw_tree(*tree)
 
         # Draw rocket
         rocket.draw()
@@ -158,7 +169,7 @@ def main():
             "state": rocket.state,
         }
 
-        draw_info_panel(10, 10, 210, 175, info)
+        draw_info_panel(10, 10, 230, 230, info)
 
         if draw_editor_panel(sim_width, 0, panel_width, screen_height, config):
             print(f"[INFO] Saving config to '{CONFIG_PATH}'")
@@ -167,8 +178,9 @@ def main():
             engine = load_engine_json(CONFIG_PATH)
 
         # Draw wind indicator and particles
-        Wind.draw_indicator(current_wind, sim_width)
-        wind_effects.update_and_draw(current_wind)
+        if not paused:
+            Wind.draw_indicator(current_wind, sim_width)
+            wind_effects.update_and_draw(current_wind)
 
         # Draw paused text
         if paused:

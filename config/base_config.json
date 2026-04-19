@@ -5,12 +5,12 @@
       "min": 0.0,
       "max": 700.0,
       "terms": [
-        { "name": "Ground", "type": "triangle", "points": [0.0, 0.0, 30.0] },
-        { "name": "Close", "type": "triangle", "points": [25.0, 100.0, 150.0] },
+        { "name": "Ground", "type": "triangle", "points": [0.0, 0.0, 75.0] },
+        { "name": "Close", "type": "triangle", "points": [50.0, 150.0, 400.0] },
         {
           "name": "Medium",
           "type": "trapezoid",
-          "points": [100.0, 300.0, 400.0, 500.0]
+          "points": [200.0, 300.0, 400.0, 600.0]
         },
         {
           "name": "High",
@@ -21,20 +21,20 @@
     },
     {
       "name": "VSpeed",
-      "min": -2.0,
+      "min": -10.0,
       "max": 15.0,
       "terms": [
         {
           "name": "Climb",
           "type": "trapezoid",
-          "points": [-2.0, -2.0, -0.2, 0.0]
+          "points": [-10.0, -10.0, -0.2, 0.4]
         },
-        { "name": "Land", "type": "triangle", "points": [0.0, 0.8, 1.25] },
-        { "name": "Slow", "type": "triangle", "points": [1.0, 1.5, 3.0] },
+        { "name": "Land", "type": "triangle", "points": [0.0, 0.8, 2.50] },
+        { "name": "Slow", "type": "triangle", "points": [1.0, 4.5, 7.5] },
         {
           "name": "Fast",
           "type": "trapezoid",
-          "points": [2.0, 3.5, 15.0, 15.0]
+          "points": [5, 10, 15.0, 15.0]
         }
       ]
     },
@@ -51,13 +51,13 @@
         {
           "name": "Left",
           "type": "triangle",
-          "points": [-250.0, -200.0, -30.0]
+          "points": [-200.0, -150.0, -20.0]
         },
         { "name": "Center", "type": "triangle", "points": [-35.0, 0.0, 35.0] },
         {
           "name": "Right",
           "type": "triangle",
-          "points": [30.0, 200.0, 250.0]
+          "points": [20.0, 150.0, 200.0]
         },
         {
           "name": "FarRight",
@@ -74,23 +74,23 @@
         {
           "name": "FastLeft",
           "type": "trapezoid",
-          "points": [-15.0, -15.0, -10.0, -7.5]
+          "points": [-15.0, -15.0, -10.0, -5.0]
         },
         {
           "name": "SlowLeft",
           "type": "triangle",
-          "points": [-10.0, -5.0, 0.0]
+          "points": [-7.5, -2.5, 0.0]
         },
-        { "name": "Zero", "type": "triangle", "points": [-1.0, 0.0, 1.0] },
+        { "name": "Zero", "type": "triangle", "points": [-2.0, 0.0, 2.0] },
         {
           "name": "SlowRight",
           "type": "triangle",
-          "points": [0.0, 5.0, 10.0]
+          "points": [0.0, 2.5, 7.5]
         },
         {
           "name": "FastRight",
           "type": "trapezoid",
-          "points": [7.5, 10.0, 15.0, 15.0]
+          "points": [5.0, 10.0, 15.0, 15.0]
         }
       ]
     }
@@ -101,10 +101,10 @@
       "min": 0.0,
       "max": 1.0,
       "terms": [
-        { "name": "Off", "type": "triangle", "points": [0.0, 0.0, 0.2] },
-        { "name": "Idle", "type": "triangle", "points": [0.2, 0.35, 0.45] },
-        { "name": "Soft", "type": "triangle", "points": [0.4, 0.45, 0.5] },
-        { "name": "Mid", "type": "triangle", "points": [0.45, 0.6, 0.7] },
+        { "name": "Off", "type": "triangle", "points": [0.0, 0.0, 0.3] },
+        { "name": "Idle", "type": "triangle", "points": [0.2, 0.25, 0.45] },
+        { "name": "Soft", "type": "triangle", "points": [0.3, 0.40, 0.55] },
+        { "name": "Mid", "type": "triangle", "points": [0.45, 0.6, 0.8] },
         { "name": "Max", "type": "triangle", "points": [0.6, 1.0, 1.0] }
       ]
     },
@@ -115,7 +115,7 @@
       "terms": [
         { "name": "FullLeft", "type": "triangle", "points": [-1.0, -1.0, -0.6] },
         { "name": "SoftLeft", "type": "triangle", "points": [-0.75, -0.45, -0.2] },
-        { "name": "Zero", "type": "triangle", "points": [-0.25, 0.0, 0.25] },
+        { "name": "Zero", "type": "triangle", "points": [-0.4, 0.0, 0.4] },
         { "name": "SoftRight", "type": "triangle", "points": [0.2, 0.45, 0.75] },
         { "name": "FullRight", "type": "triangle", "points": [0.6, 1.0, 1.0] }
       ]
@@ -123,19 +123,49 @@
   ],
   "rules": [
     {
-      "desc": "IF VSpeed IS Climb THEN VThrust IS Off",
+      "desc": "IF VSpeed IS Climb THEN VThrust IS Idle",
       "if": { "var": "VSpeed", "is": "Climb" },
-      "then": { "var": "VThrust", "is": "Off" }
+      "then": { "var": "VThrust", "is": "Idle" }
     },
     {
-      "desc": "IF Height IS High AND VSpeed IS Slow THEN VThrust IS Off",
+      "desc": "IF Height IS High AND VSpeed IS Slow THEN VThrust IS Idle",
       "if": {
         "and": [
           { "var": "Height", "is": "High" },
           { "var": "VSpeed", "is": "Slow" }
         ]
       },
-      "then": { "var": "VThrust", "is": "Off" }
+      "then": { "var": "VThrust", "is": "Idle" }
+    },
+    {
+      "desc": "IF Height IS High AND VSpeed IS Land THEN VThrust IS Idle",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "High" },
+          { "var": "VSpeed", "is": "Land" }
+        ]
+      },
+      "then": { "var": "VThrust", "is": "Idle" }
+    },
+    {
+      "desc": "IF Height IS Medium AND VSpeed IS Land THEN VThrust IS Idle",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "Medium" },
+          { "var": "VSpeed", "is": "Land" }
+        ]
+      },
+      "then": { "var": "VThrust", "is": "Idle" }
+    },
+    {
+      "desc": "IF Height IS Close AND VSpeed IS Land THEN VThrust IS Idle",
+      "if": {
+        "and": [
+          { "var": "Height", "is": "Close" },
+          { "var": "VSpeed", "is": "Land" }
+        ]
+      },
+      "then": { "var": "VThrust", "is": "Idle" }
     },
     {
       "desc": "IF Height IS High AND VSpeed IS Fast THEN VThrust IS Idle",
@@ -145,7 +175,7 @@
           { "var": "VSpeed", "is": "Fast" }
         ]
       },
-      "then": { "var": "VThrust", "is": "Soft" }
+      "then": { "var": "VThrust", "is": "Idle" }
     },
     {
       "desc": "IF Height IS Medium AND VSpeed IS Fast THEN VThrust IS Mid",
@@ -198,24 +228,24 @@
       "then": { "var": "VThrust", "is": "Max" }
     },
     {
-      "desc": "IF Height IS Ground AND VSpeed IS Slow THEN VThrust IS Soft",
+      "desc": "IF Height IS Ground AND VSpeed IS Slow THEN VThrust IS Mid",
       "if": {
         "and": [
           { "var": "Height", "is": "Ground" },
           { "var": "VSpeed", "is": "Slow" }
         ]
       },
-      "then": { "var": "VThrust", "is": "Max" }
+      "then": { "var": "VThrust", "is": "Mid" }
     },
     {
-      "desc": "IF Height IS Ground AND VSpeed IS Land THEN VThrust IS Idle",
+      "desc": "IF Height IS Ground AND VSpeed IS Land THEN VThrust IS Soft",
       "if": {
         "and": [
           { "var": "Height", "is": "Ground" },
           { "var": "VSpeed", "is": "Land" }
         ]
       },
-      "then": { "var": "VThrust", "is": "Idle" }
+      "then": { "var": "VThrust", "is": "Soft" }
     },
     {
       "desc": "IF ErrorX IS FarLeft THEN HThrust IS FullRight",
@@ -236,11 +266,11 @@
       "then": { "var": "HThrust", "is": "FullRight" }
     },
     {
-      "desc": "IF ErrorX IS Left AND HSpeed IS SlowLeft THEN HThrust IS SoftRight",
+      "desc": "IF ErrorX IS Left AND HSpeed IS SlowLeft THEN HThrust IS FullRight",
       "if": {
         "and": [
           { "var": "ErrorX", "is": "Left" },
-          { "var": "HSpeed", "is": "SlowLeft" }
+          { "var": "HSpeed", "is": "FullLeft" }
         ]
       },
       "then": { "var": "HThrust", "is": "SoftRight" }
@@ -326,14 +356,14 @@
       "then": { "var": "HThrust", "is": "SoftRight" }
     },
     {
-      "desc": "IF ErrorX IS Right AND HSpeed IS SlowRight THEN HThrust IS SoftLeft",
+      "desc": "IF ErrorX IS Right AND HSpeed IS SlowRight THEN HThrust IS FullLeft",
       "if": {
         "and": [
           { "var": "ErrorX", "is": "Right" },
           { "var": "HSpeed", "is": "SlowRight" }
         ]
       },
-      "then": { "var": "HThrust", "is": "SoftLeft" }
+      "then": { "var": "HThrust", "is": "FullLeft" }
     },
     {
       "desc": "IF ErrorX IS Right AND HSpeed IS Zero THEN HThrust IS SoftLeft",
@@ -360,6 +390,56 @@
       "if": {
         "var": "ErrorX",
         "is": "FarRight"
+      },
+      "then": { "var": "HThrust", "is": "FullLeft" }
+    },
+    {
+      "desc": "IF ErrorX IS FarLeft OR ErrorX IS FarRight AND Height IS Ground THEN VThrust IS Max",
+      "if": {
+        "and": [
+          {
+          "or": [
+              { "var": "ErrorX", "is": "FarLeft" },
+              { "var": "ErrorX", "is": "FarRight" }
+            ]
+          },
+          { "var": "Height", "is": "Ground"}
+        ]
+      },
+      "then": { "var": "VThrust", "is": "Max" }
+    },
+    {
+      "desc": "IF (ErrorX IS Left OR ErrorX IS Right) AND Height IS Ground THEN VThrust IS Mid",
+      "if": {
+        "and": [
+          {
+            "or": [
+              { "var": "ErrorX", "is": "Left" },
+              { "var": "Height", "is": "Ground" }
+            ]
+          },
+          { "var": "Height", "is": "Ground" }
+        ]
+      },
+      "then": { "var": "VThrust", "is": "Mid" }
+    },
+    {
+      "desc": "IF ErrorX IS Left AND Height IS Ground THEN HThrust IS FullRight",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Left" },
+          { "var": "Height", "is": "Ground" }
+        ]
+      },
+      "then": { "var": "HThrust", "is": "FullRight" }
+    },
+    {
+      "desc": "IF ErrorX IS Right AND Height IS Ground THEN HThrust IS FullLeft",
+      "if": {
+        "and": [
+          { "var": "ErrorX", "is": "Right" },
+          { "var": "Height", "is": "Ground" }
+        ]
       },
       "then": { "var": "HThrust", "is": "FullLeft" }
     }

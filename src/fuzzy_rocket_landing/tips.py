@@ -56,6 +56,11 @@ def main():
         tip_percentage = res.get("Tip", 0.0)
         print(f"Entries: {case} -> Suggested tip: {tip_percentage:.2f}%")
 
+    engine.get_variable("Service").plot()
+    engine.get_variable("Food").plot()
+    engine.get_variable("Tip").plot()
+    engine.plot_decision_surface("Service", "Food", "Tip")
+
 
 if __name__ == "__main__":
     main()

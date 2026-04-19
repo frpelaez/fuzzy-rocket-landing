@@ -156,23 +156,65 @@ def draw_info_panel(
 ) -> None:
     r, g, b, _ = pr.RAYWHITE
     pr.draw_rectangle_rounded(
-        pr.Rectangle(x, y, width, height), 0.1, 10, (r, g, b, 100)
+        pr.Rectangle(x, y, width, height), 0.1, 10, (r, g, b, 150)
     )
 
-    pr.draw_text(f"Height:    {info['height']:.1f}", x + 10, y + 10, 20, pr.DARKGRAY)
-    pr.draw_text(f"ErrorX:   {info['error_x']:.1f}", x + 10, y + 30, 20, pr.DARKGRAY)
-    pr.draw_text(f"VSpeed:  {info['v_speed']:.2f}", x + 10, y + 50, 20, pr.DARKGRAY)
-    pr.draw_text(f"HSpeed:   {info['h_speed']:.2f}", x + 10, y + 70, 20, pr.DARKGRAY)
-    pr.draw_text(f"VThrust: {info['v_thrust']:.2f}", x + 10, y + 90, 20, pr.DARKGRAY)
-    pr.draw_text(f"HThrust: {info['h_thrust']:.2f}", x + 10, y + 110, 20, pr.DARKGRAY)
+    def _draw_bar(
+        row_y: int,
+        label: str,
+        val: float,
+        max_v: float,
+        color: pr.Color,
+        centered: bool = False,
+    ):
+        pr.draw_text(label, x + 10, row_y, 20, pr.DARKGRAY)
+
+        bar_x = x + 110
+        bar_w = width - 180
+        bar_h = 16
+        bar_y = row_y + 2
+
+        pr.draw_rectangle(bar_x, bar_y, bar_w, bar_h, pr.LIGHTGRAY)
+
+        if centered:
+            pct = max(-1.0, min(1.0, val / max_v))
+            centro_x = bar_x + bar_w / 2
+            ancho_relleno = int((bar_w / 2) * abs(pct))
+
+            if pct > 0:
+                pr.draw_rectangle(int(centro_x), bar_y, ancho_relleno, bar_h, color)
+            elif pct < 0:
+                pr.draw_rectangle(
+                    int(centro_x) - ancho_relleno, bar_y, ancho_relleno, bar_h, color
+                )
+
+            pr.draw_line(
+                int(centro_x), bar_y - 2, int(centro_x), bar_y + bar_h + 2, pr.DARKGRAY
+            )
+        else:
+            pct = max(0.0, min(1.0, val / max_v))
+            ancho_relleno = int(bar_w * pct)
+            pr.draw_rectangle(bar_x, bar_y, ancho_relleno, bar_h, color)
+
+        pr.draw_text(f"{val:>6.2f}", bar_x + bar_w + 5, row_y, 20, pr.DARKGRAY)
+
+    start_y = y + 15
+    gutter = 25
+
+    _draw_bar(start_y + gutter * 0, "Height", info["height"], 800.0, pr.BLUE)
+    _draw_bar(start_y + gutter * 1, "ErrorX", info["error_x"], 250.0, pr.ORANGE, True)
+    _draw_bar(start_y + gutter * 2, "VSpeed", info["v_speed"], 20.0, pr.GREEN, True)
+    _draw_bar(start_y + gutter * 3, "HSpeed", info["h_speed"], 10.0, pr.VIOLET, True)
+    _draw_bar(start_y + gutter * 4, "VThrust", info["v_thrust"], 1.0, pr.RED)
+    _draw_bar(start_y + gutter * 5, "HThrust", info["h_thrust"], 1.0, pr.SKYBLUE, True)
+
     state = info["state"]
-    pr.draw_text(
-        f"State:     {state}",
-        x + 10,
-        y + 130,
-        20,
+    color_estado = (
         pr.DARKGREEN
         if state == "land"
-        else (pr.RED if state == "crash" else pr.DARKGRAY),
+        else (pr.RED if state == "crash" else pr.DARKGRAY)
     )
-    pr.draw_text(f"FPS:       {pr.get_fps()}", x + 10, y + 150, 20, pr.DARKGRAY)
+
+    fila_inferior = start_y + gutter * 6 + 10
+    pr.draw_text(f"State: {state.upper()}", x + 10, fila_inferior, 20, color_estado)
+    pr.draw_text(f"FPS: {pr.get_fps()}", x + 10, fila_inferior + 25, 20, pr.DARKGRAY)

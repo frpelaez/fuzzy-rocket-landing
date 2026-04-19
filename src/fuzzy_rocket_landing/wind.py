@@ -19,7 +19,7 @@ class Wind:
 
     @staticmethod
     def draw_indicator(current_wind: float, sim_width: int) -> None:
-        wind_bar_x = sim_width // 2
+        wind_bar_x = sim_width // 2 + 20
         wind_bar_y = 50
         pr.draw_text("Wind", wind_bar_x - 20, wind_bar_y + 10, 20, pr.DARKGRAY)
         pr.draw_line(wind_bar_x - 50, wind_bar_y, wind_bar_x + 50, wind_bar_y, pr.GRAY)
